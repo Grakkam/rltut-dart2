@@ -1,3 +1,8 @@
+## 0.2.0
+
+- Part 2 done!
+- Trying my best to stay true to the python tutorial, using malison screens instead of event handlers.
+
 ## 0.1.0
 - Part 1 of the tutorial done!
 

@@ -4,76 +4,28 @@ import 'dart:math' as math;
 
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
+import 'package:piecemeal/piecemeal.dart';
 
-import 'package:rltut/src/actions.dart';
+import 'package:rltut/src/engine.dart';
+import 'package:rltut/src/entity.dart';
+import 'package:rltut/src/gamemap.dart';
 
 final screenWidth = 80;
-final screenHeight = 45;
+final screenHeight = 50;
+final mapWidth = 80;
+final mapHeight = 45;
+
 var playerX = screenWidth ~/ 2;
 var playerY = screenHeight ~/ 2;
 
-class GameScreen extends Screen<String> {
-  var _action;
+var player = Entity(Vec(playerX, playerY), '@', Color.white);
+var npc = Entity(Vec(playerX - 5, playerY), '@', Color.yellow);
+var entities = <Entity>[npc, player];
 
-  GameScreen();
+var gameMap = GameMap(mapWidth, mapHeight);
 
-  @override
-  bool handleInput(String input) {
-    switch (input) {
-      case 'n':
-        _action = MovementAction(0, -1);
-        break;
-      case 's':
-        _action = MovementAction(0, 1);
-        break;
-      case 'w':
-        _action = MovementAction(-1, 0);
-        break;
-      case 'e':
-        _action = MovementAction(1, 0);
-        break;
-      default:
-        return false;
-    }
-
-    if (_action is MovementAction) {
-      playerX += _action.dx;
-      playerY += _action.dy;
-    }
-
-    ui.refresh();
-
-    return true;
-  }
-
-  @override
-  void update() {
-    dirty();
-  }
-
-  @override
-  void render(Terminal terminal) {
-    terminal.writeAt(playerX, playerY, '@');
-  }
-}
-
-// --------------------
-
-final _fonts = <TerminalFont>[];
-UserInterface<String> _ui;
-
-TerminalFont _font;
-
-class TerminalFont {
-  final String name;
-  final html.CanvasElement canvas;
-  RenderableTerminal terminal;
-  final int charWidth;
-  final int charHeight;
-
-  TerminalFont(this.name, this.canvas, this.terminal,
-      {this.charWidth, this.charHeight});
-} // End of class TerminalFont
+var engine = Engine(entities, gameMap, player);
+var screen = GameScreen(engine);
 
 void main() {
   _addFont('8x8', 8);
@@ -102,10 +54,28 @@ void main() {
   _ui.keyPress.bind('s', KeyCode.down);
   _ui.keyPress.bind('w', KeyCode.left);
 
-  _ui.push(GameScreen());
+  _ui.push(screen);
 
   _ui.handlingInput = true;
 } // End of main()
+
+// --------------------
+
+final _fonts = <TerminalFont>[];
+UserInterface<String> _ui;
+
+TerminalFont _font;
+
+class TerminalFont {
+  final String name;
+  final html.CanvasElement canvas;
+  RenderableTerminal terminal;
+  final int charWidth;
+  final int charHeight;
+
+  TerminalFont(this.name, this.canvas, this.terminal,
+      {this.charWidth, this.charHeight});
+} // End of class TerminalFont
 
 void _addFont(String name, int charWidth, [int charHeight]) {
   charHeight ??= charWidth;
