@@ -4,7 +4,6 @@ import 'dart:math' as math;
 
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
-import 'package:piecemeal/piecemeal.dart';
 
 import 'package:rltut/src/engine.dart';
 import 'package:rltut/src/entity.dart';
@@ -20,17 +19,14 @@ final roomMaxSize = 10;
 final roomMinSize = 6;
 final maxRooms = 30;
 
-var playerX = screenWidth ~/ 2;
-var playerY = screenHeight ~/ 2;
+var maxMonstersPerRoom = 2;
 
-var player = Entity(Vec(playerX, playerY), '@', Color.white);
-var npc = Entity(Vec(playerX - 5, playerY), '@', Color.yellow);
-var entities = <Entity>[npc, player];
+var player = Entity.player();
 
-var gameMap = generateDungeon(
-    maxRooms, roomMinSize, roomMaxSize, mapWidth, mapHeight, player);
+var gameMap = generateDungeon(maxRooms, roomMinSize, roomMaxSize, mapWidth,
+    mapHeight, maxMonstersPerRoom, player);
 
-var engine = Engine(entities, gameMap, player, Fov(gameMap));
+var engine = Engine(gameMap, player, Fov(gameMap));
 var screen = GameScreen(engine);
 
 void main() {

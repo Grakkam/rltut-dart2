@@ -7,8 +7,8 @@ import 'package:rltut/src/gamemap.dart';
 import 'package:rltut/src/tiletypes.dart';
 
 GameMap generateDungeon(int maxRooms, int roomMinSize, int roomMaxSize,
-    int mapWidth, int mapHeight, Entity player) {
-  var dungeon = GameMap(mapWidth, mapHeight);
+    int mapWidth, int mapHeight, int maxMonstersPerRoom, Entity player) {
+  var dungeon = GameMap(mapWidth, mapHeight, [player]);
   var random = math.Random();
 
   List<Room> rooms;
@@ -49,6 +49,8 @@ GameMap generateDungeon(int maxRooms, int roomMinSize, int roomMaxSize,
       }
     }
 
+    placeEntities(newRoom.inner, dungeon, maxMonstersPerRoom);
+
     rooms.add(newRoom);
   }
 
@@ -86,4 +88,22 @@ List<Rect> tunnelBetween(Vec start, Vec end) {
   }
 
   return tunnels;
+}
+
+void placeEntities(Rect room, GameMap dungeon, int maximumMonsters) {
+  var random = math.Random();
+  var nrOfMonsters = random.nextInt(maximumMonsters);
+
+  for (var i = 0; i < nrOfMonsters; i++) {
+    var x = room.left + random.nextInt(room.width);
+    var y = room.top + random.nextInt(room.height);
+    var pos = Vec(x, y);
+    if (!dungeon.entities.any((element) => element.pos == pos)) {
+      if (random.nextInt(100) < 80) {
+        Entity.orc(dungeon, pos);
+      } else {
+        Entity.troll(dungeon, pos);
+      }
+    }
+  }
 }
