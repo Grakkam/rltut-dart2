@@ -8,12 +8,16 @@ import 'package:piecemeal/piecemeal.dart';
 
 import 'package:rltut/src/engine.dart';
 import 'package:rltut/src/entity.dart';
-import 'package:rltut/src/gamemap.dart';
+import 'package:rltut/src/procgen.dart';
 
 final screenWidth = 80;
 final screenHeight = 50;
 final mapWidth = 80;
 final mapHeight = 45;
+
+final roomMaxSize = 10;
+final roomMinSize = 6;
+final maxRooms = 30;
 
 var playerX = screenWidth ~/ 2;
 var playerY = screenHeight ~/ 2;
@@ -22,7 +26,8 @@ var player = Entity(Vec(playerX, playerY), '@', Color.white);
 var npc = Entity(Vec(playerX - 5, playerY), '@', Color.yellow);
 var entities = <Entity>[npc, player];
 
-var gameMap = GameMap(mapWidth, mapHeight);
+var gameMap = generateDungeon(
+    maxRooms, roomMinSize, roomMaxSize, mapWidth, mapHeight, player);
 
 var engine = Engine(entities, gameMap, player);
 var screen = GameScreen(engine);

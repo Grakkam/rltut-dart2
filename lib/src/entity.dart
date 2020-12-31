@@ -12,6 +12,7 @@ class Entity {
   String get char => _char;
   Color get color => _color;
 
+  set pos(Vec value) => _pos = value;
   set char(String value) => _char = value;
   set color(Color value) => _color = value;
 

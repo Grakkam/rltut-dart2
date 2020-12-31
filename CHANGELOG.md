@@ -1,3 +1,7 @@
+## 0.3.0
+
+- Part 3 done!
+
 ## 0.2.0
 
 - Part 2 done!

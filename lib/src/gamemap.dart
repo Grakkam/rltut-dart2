@@ -13,11 +13,7 @@ class GameMap {
   Array2D get tiles => _tiles;
 
   GameMap(this._width, this._height) {
-    _tiles = Array2D(_width, _height, TileTypes.floor);
-
-    tiles[Vec(30, 22)] = TileTypes.wall;
-    tiles[Vec(31, 22)] = TileTypes.wall;
-    tiles[Vec(32, 22)] = TileTypes.wall;
+    _tiles = Array2D(_width, _height, TileTypes.wall);
   }
 
   bool inBounds(Vec pos) {

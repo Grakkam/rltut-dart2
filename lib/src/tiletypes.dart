@@ -40,4 +40,10 @@ class TileTypes {
     transparent: false,
     dark: TileGlyph(' ', Color.white, Color.darkBlue),
   );
+
+  static Tile foo = Tile(
+    walkable: true,
+    transparent: true,
+    dark: TileGlyph('#', Color.white, Color.darkPurple),
+  );
 }
