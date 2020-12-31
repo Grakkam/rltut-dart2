@@ -1,3 +1,8 @@
+## 0.4.0
+
+- Part 4 - FOV - done!
+- Field of View algorithm and code from http://journal.stuffwithstuff.com/2015/09/07/what-the-hero-sees/
+
 ## 0.3.0
 
 - Part 3 done!

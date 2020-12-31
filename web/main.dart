@@ -8,6 +8,7 @@ import 'package:piecemeal/piecemeal.dart';
 
 import 'package:rltut/src/engine.dart';
 import 'package:rltut/src/entity.dart';
+import 'package:rltut/src/fov.dart';
 import 'package:rltut/src/procgen.dart';
 
 final screenWidth = 80;
@@ -29,7 +30,7 @@ var entities = <Entity>[npc, player];
 var gameMap = generateDungeon(
     maxRooms, roomMinSize, roomMaxSize, mapWidth, mapHeight, player);
 
-var engine = Engine(entities, gameMap, player);
+var engine = Engine(entities, gameMap, player, Fov(gameMap));
 var screen = GameScreen(engine);
 
 void main() {
