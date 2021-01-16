@@ -6,9 +6,10 @@ import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
 
 import 'package:rltut/src/engine.dart';
-import 'package:rltut/src/entity.dart';
+import 'package:rltut/src/entityfactories.dart';
 import 'package:rltut/src/fov.dart';
 import 'package:rltut/src/procgen.dart';
+import 'package:rltut/src/screens.dart';
 
 final screenWidth = 80;
 final screenHeight = 50;
@@ -20,14 +21,6 @@ final roomMinSize = 6;
 final maxRooms = 30;
 
 var maxMonstersPerRoom = 2;
-
-var player = Entity.player();
-
-var gameMap = generateDungeon(maxRooms, roomMinSize, roomMaxSize, mapWidth,
-    mapHeight, maxMonstersPerRoom, player);
-
-var engine = Engine(gameMap, player, Fov(gameMap));
-var screen = GameScreen(engine);
 
 void main() {
   _addFont('8x8', 8);
@@ -51,12 +44,29 @@ void main() {
 
   _ui = UserInterface<String>(_font.terminal);
 
+  // Arrow keys.
+  // +Shift for north-...
+  // +Alt for south-...
+  _ui.keyPress.bind('nw', KeyCode.left, shift: true);
   _ui.keyPress.bind('n', KeyCode.up);
-  _ui.keyPress.bind('e', KeyCode.right);
-  _ui.keyPress.bind('s', KeyCode.down);
+  _ui.keyPress.bind('ne', KeyCode.right, shift: true);
   _ui.keyPress.bind('w', KeyCode.left);
+  _ui.keyPress.bind('e', KeyCode.right);
+  _ui.keyPress.bind('sw', KeyCode.left, alt: true);
+  _ui.keyPress.bind('s', KeyCode.down);
+  _ui.keyPress.bind('se', KeyCode.right, alt: true);
 
-  _ui.push(screen);
+  var player = Player();
+
+  var engine = Engine(player);
+
+  engine.gameMap = generateDungeon(maxRooms, roomMinSize, roomMaxSize, mapWidth,
+      mapHeight, maxMonstersPerRoom, engine);
+  player.gameMap = engine.gameMap;
+  engine.fov = Fov(engine.gameMap);
+  engine.updateFov();
+
+  _ui.push(engine.screen);
 
   _ui.handlingInput = true;
 } // End of main()

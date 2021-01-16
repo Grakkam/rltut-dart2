@@ -2,13 +2,16 @@ import 'dart:math' as math;
 
 import 'package:piecemeal/piecemeal.dart';
 
+import 'package:rltut/src/engine.dart';
 import 'package:rltut/src/entity.dart';
+import 'package:rltut/src/entityfactories.dart';
 import 'package:rltut/src/gamemap.dart';
 import 'package:rltut/src/tiletypes.dart';
 
 GameMap generateDungeon(int maxRooms, int roomMinSize, int roomMaxSize,
-    int mapWidth, int mapHeight, int maxMonstersPerRoom, Entity player) {
-  var dungeon = GameMap(mapWidth, mapHeight, [player]);
+    int mapWidth, int mapHeight, int maxMonstersPerRoom, Engine engine) {
+  var player = engine.player;
+  var dungeon = GameMap(engine, mapWidth, mapHeight, [player]);
   var random = math.Random();
 
   List<Room> rooms;
@@ -39,7 +42,7 @@ GameMap generateDungeon(int maxRooms, int roomMinSize, int roomMaxSize,
 
     if (rooms.isEmpty) {
       // This is the first room, where the player starts.
-      player.pos = newRoom.center;
+      player.place(newRoom.center.x, newRoom.center.y);
     } else {
       // Connect the room with the previous room.
       for (var tunnel in tunnelBetween(rooms.last.center, newRoom.center)) {
@@ -97,13 +100,15 @@ void placeEntities(Rect room, GameMap dungeon, int maximumMonsters) {
   for (var i = 0; i < nrOfMonsters; i++) {
     var x = room.left + random.nextInt(room.width);
     var y = room.top + random.nextInt(room.height);
-    var pos = Vec(x, y);
-    if (!dungeon.entities.any((element) => element.pos == pos)) {
+
+    if (!dungeon.entities.any((element) => element.pos == Vec(x, y))) {
+      var monster;
       if (random.nextInt(100) < 80) {
-        Entity.orc(dungeon, pos);
+        monster = Orc();
       } else {
-        Entity.troll(dungeon, pos);
+        monster = Troll();
       }
+      monster.place(x, y, dungeon);
     }
   }
 }

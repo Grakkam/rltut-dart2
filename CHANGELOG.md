@@ -1,3 +1,12 @@
+## 0.6.0
+
+- Part 6 - doing damage - done!
+- Using malison screens instead of event handlers.
+
+## 0.5.0
+
+- Part 5 - placing enemies - done!
+
 ## 0.4.0
 
 - Part 4 - FOV - done!
