@@ -4,23 +4,28 @@ import 'dart:math' as math;
 
 import 'package:malison/malison.dart';
 import 'package:malison/malison_web.dart';
+import 'package:piecemeal/piecemeal.dart';
 
 import 'package:rltut/src/engine.dart';
 import 'package:rltut/src/entityfactories.dart';
 import 'package:rltut/src/fov.dart';
 import 'package:rltut/src/procgen.dart';
-import 'package:rltut/src/screens.dart';
+import 'package:rltut/src/uicolor.dart';
 
 final screenWidth = 80;
 final screenHeight = 50;
 final mapWidth = 80;
-final mapHeight = 45;
+final mapHeight = 43;
 
 final roomMaxSize = 10;
 final roomMinSize = 6;
 final maxRooms = 30;
 
 var maxMonstersPerRoom = 2;
+
+final player = Player();
+
+final engine = Engine(player);
 
 void main() {
   _addFont('8x8', 8);
@@ -56,19 +61,22 @@ void main() {
   _ui.keyPress.bind('s', KeyCode.down);
   _ui.keyPress.bind('se', KeyCode.right, alt: true);
 
-  var player = Player();
-
-  var engine = Engine(player);
+  _ui.keyPress.bind('viewHistory', KeyCode.v);
+  _ui.keyPress.bind('exit', KeyCode.x);
 
   engine.gameMap = generateDungeon(maxRooms, roomMinSize, roomMaxSize, mapWidth,
       mapHeight, maxMonstersPerRoom, engine);
   player.gameMap = engine.gameMap;
   engine.fov = Fov(engine.gameMap);
   engine.updateFov();
+  engine.messageLog.addMessage(
+      text: 'Hello and welcome, adventurer, to yet another dungeon!',
+      fg: UIColor.welcomeText);
 
   _ui.push(engine.screen);
 
   _ui.handlingInput = true;
+  _ui.running = true;
 } // End of main()
 
 // --------------------
@@ -162,6 +170,20 @@ RetroTerminal _makeTerminal(
   if (charWidth != charHeight) {
     file += '_$charHeight';
   }
+
+  int xOffset;
+  int yOffset;
+
+  canvas.onMouseMove.listen((e) {
+    xOffset = canvas.borderEdge.topLeft.x.toInt();
+    yOffset = canvas.borderEdge.topLeft.y.toInt();
+    var newMousePos = Vec(((e.client.x - xOffset) / charWidth - .5).toInt(),
+        ((e.client.y - yOffset) / charWidth - .5).toInt());
+    if (engine.mousePos != newMousePos) {
+      engine.updateMousePos(newMousePos);
+    }
+  });
+
   return RetroTerminal(width, height, '$file.png',
       canvas: canvas, charWidth: charWidth, charHeight: charHeight);
 } // End of _makeTerminal()

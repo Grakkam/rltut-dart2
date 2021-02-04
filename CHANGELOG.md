@@ -1,3 +1,11 @@
+## 0.7.0
+
+- Part 7 - user interface - done!
+- Added life bar.
+- Added message log.
+- Added basic mouse support. Mouse pointer identifies entities on the map.
+- Added message log history. [v] brings it up. [up] & [down] scrolls one line at a time. [right] & [left] scrolls 10 lines at a time. [x] exits.
+
 ## 0.6.0
 
 - Part 6 - doing damage - done!

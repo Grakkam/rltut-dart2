@@ -5,6 +5,7 @@ import 'package:rltut/src/components/basecomponent.dart';
 import 'package:rltut/src/entity.dart';
 import 'package:rltut/src/renderorder.dart';
 import 'package:rltut/src/screens.dart';
+import 'package:rltut/src/uicolor.dart';
 
 class Fighter extends BaseComponent {
   int maxHp;
@@ -23,11 +24,15 @@ class Fighter extends BaseComponent {
 
   void die() {
     String deathMessage;
+    Color deathMessageColor;
+
     if (entity == engine.player) {
       deathMessage = 'You died!';
+      deathMessageColor = UIColor.playerDie;
       engine.screen.ui.push(GameOverScreen(engine));
     } else {
       deathMessage = '${entity.name} is dead!';
+      deathMessageColor = UIColor.enemyDie;
     }
 
     entity.char = '%';
@@ -37,7 +42,7 @@ class Fighter extends BaseComponent {
     entity.name = 'remains of ${entity.name}';
     entity.renderOrder = RenderOrder.corpse;
 
-    print(deathMessage);
+    engine.messageLog.addMessage(text: deathMessage, fg: deathMessageColor);
   }
 
   Fighter(Actor actor, this.maxHp, this.defense, this.power) {

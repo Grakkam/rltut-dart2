@@ -1,6 +1,7 @@
 import 'package:piecemeal/piecemeal.dart';
 import 'package:rltut/src/engine.dart';
 import 'package:rltut/src/entity.dart';
+import 'package:rltut/src/uicolor.dart';
 
 abstract class Action {
   final Actor _entity;
@@ -52,12 +53,17 @@ class MeleeAction extends ActionWithDirection {
     var damage = entity.fighter.power - target.fighter.defense;
 
     var attackDesc = '${entity.name} attacks ${target.name}';
-
+    var attackColor = UIColor.playerAttack;
+    if (entity != engine.player) {
+      attackColor = UIColor.enemyAttack;
+    }
     if (damage > 0) {
-      print('$attackDesc for $damage hit points.');
+      engine.messageLog.addMessage(
+          text: '$attackDesc for $damage hit points.', fg: attackColor);
       target.fighter.hp -= damage;
     } else {
-      print('$attackDesc but does no damage.');
+      engine.messageLog
+          .addMessage(text: '$attackDesc but does no damage.', fg: attackColor);
     }
   }
 }
