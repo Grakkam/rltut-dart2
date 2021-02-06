@@ -17,7 +17,7 @@ class Fighter extends BaseComponent {
 
   set hp(int value) {
     _hp = max(0, min(value, maxHp));
-    if (_hp == 0 && entity.isAlive) {
+    if (_hp == 0 && (parent as Actor).ai != null) {
       die();
     }
   }
@@ -26,27 +26,26 @@ class Fighter extends BaseComponent {
     String deathMessage;
     Color deathMessageColor;
 
-    if (entity == engine.player) {
+    if (parent == engine.player) {
       deathMessage = 'You died!';
       deathMessageColor = UIColor.playerDie;
       engine.screen.ui.push(GameOverScreen(engine));
     } else {
-      deathMessage = '${entity.name} is dead!';
+      deathMessage = '${parent.name} is dead!';
       deathMessageColor = UIColor.enemyDie;
     }
 
-    entity.char = '%';
-    entity.color = Color.red;
-    entity.blocksMovement = false;
-    entity.ai = null;
-    entity.name = 'remains of ${entity.name}';
-    entity.renderOrder = RenderOrder.corpse;
+    parent.char = '%';
+    parent.color = Color.red;
+    parent.blocksMovement = false;
+    (parent as Actor).ai = null;
+    parent.name = 'remains of ${parent.name}';
+    parent.renderOrder = RenderOrder.corpse;
 
     engine.messageLog.addMessage(text: deathMessage, fg: deathMessageColor);
   }
 
-  Fighter(Actor actor, this.maxHp, this.defense, this.power) {
-    entity = actor;
+  Fighter(Actor actor, this.maxHp, this.defense, this.power) : super(actor) {
     _hp = maxHp;
   }
 }

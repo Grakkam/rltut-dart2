@@ -3,17 +3,14 @@ import 'dart:math';
 import 'package:piecemeal/piecemeal.dart';
 import 'package:rltut/src/actions.dart';
 import 'package:rltut/src/astar.dart';
-import 'package:rltut/src/components/basecomponent.dart';
 import 'package:rltut/src/entity.dart';
 
-class BaseAI extends Action with BaseComponent {
-  Actor actor;
-
+class BaseAI extends Action {
   @override
   void perform() {}
 
   List getPathTo(Vec destination) {
-    return Astar.findPath(entity.gameMap, entity.pos, destination);
+    return Astar.findPath(entity.parent.gameMap, entity.pos, destination);
   }
 
   BaseAI(Actor actor) : super(actor);
@@ -22,7 +19,7 @@ class BaseAI extends Action with BaseComponent {
 class HostileEnemy extends BaseAI {
   List _path = [];
 
-  HostileEnemy(Entity actor) : super(actor);
+  HostileEnemy(Actor actor) : super(actor);
 
   @override
   void perform() {

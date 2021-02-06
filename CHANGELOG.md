@@ -1,3 +1,7 @@
+## 0.7.1
+
+- Part 8 refactors. Ready for items!
+
 ## 0.7.0
 
 - Part 7 - user interface - done!

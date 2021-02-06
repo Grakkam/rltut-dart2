@@ -14,6 +14,7 @@ class GameMap {
   Array2D _visible;
   Array2D _explored;
 
+  GameMap get gameMap => this;
   Engine get engine => _engine;
   int get width => _width;
   int get height => _height;

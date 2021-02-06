@@ -1,8 +1,12 @@
 import 'package:rltut/src/engine.dart';
 import 'package:rltut/src/entity.dart';
+import 'package:rltut/src/gamemap.dart';
 
 abstract class BaseComponent {
-  Actor entity;
+  Entity parent;
 
-  Engine get engine => entity.gameMap.engine;
+  BaseComponent(this.parent);
+
+  GameMap get gameMap => parent.gameMap;
+  Engine get engine => parent.gameMap.engine;
 }

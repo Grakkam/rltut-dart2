@@ -6,7 +6,7 @@ import 'package:rltut/src/gamemap.dart';
 import 'package:rltut/src/renderorder.dart';
 
 class Entity {
-  GameMap _gameMap;
+  GameMap _parent;
   Vec _pos;
   String _char;
   Color _color;
@@ -14,7 +14,8 @@ class Entity {
   bool _blocksMovement;
   RenderOrder _renderOrder;
 
-  GameMap get gameMap => _gameMap;
+  GameMap get gameMap => _parent.gameMap;
+  GameMap get parent => _parent;
   Vec get pos => _pos;
   int get x => pos.x;
   int get y => pos.y;
@@ -24,7 +25,8 @@ class Entity {
   bool get blocksMovement => _blocksMovement;
   RenderOrder get renderOrder => _renderOrder;
 
-  set gameMap(GameMap value) => _gameMap = value;
+  set gameMap(GameMap value) => _parent = value;
+  // set parent(GameMap value) => _parent = value;
   set pos(Vec value) => _pos = value;
   set char(String value) => _char = value;
   set color(Color value) => _color = value;
@@ -34,10 +36,10 @@ class Entity {
 
   Entity(this._pos, this._char, this._color, this._name, this._blocksMovement,
       this._renderOrder,
-      [GameMap dungeon]) {
-    if (dungeon != null) {
-      _gameMap = dungeon;
-      _gameMap.entities.add(this);
+      [GameMap parent]) {
+    if (parent != null) {
+      _parent = parent;
+      _parent.entities.add(this);
     }
   }
 
@@ -48,11 +50,11 @@ class Entity {
   void place(int x, int y, [GameMap dungeon]) {
     _pos = Vec(x, y);
     if (dungeon != null) {
-      if (_gameMap != null) {
-        _gameMap.entities.remove(this);
+      if (parent != null) {
+        gameMap.entities.remove(this);
       }
-      _gameMap = dungeon;
-      _gameMap.entities.add(this);
+      _parent = dungeon;
+      gameMap.entities.add(this);
     }
   }
 }
@@ -70,8 +72,8 @@ class Actor extends Entity {
       Fighter fighterComponent)
       : super(pos, char, color, name, true, RenderOrder.actor) {
     _ai = aiClass;
-    _ai.entity = this;
+    _ai.actor = this;
     _fighter = fighterComponent;
-    _fighter.entity = this;
+    _fighter.parent = this;
   }
 }

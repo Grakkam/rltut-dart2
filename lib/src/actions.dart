@@ -4,9 +4,11 @@ import 'package:rltut/src/entity.dart';
 import 'package:rltut/src/uicolor.dart';
 
 abstract class Action {
-  final Actor _entity;
+  Actor _entity;
   Actor get entity => _entity;
-  Engine get engine => _entity.gameMap.engine;
+  Engine get engine => _entity.parent.engine;
+
+  set actor(Actor value) => _entity = value;
 
   Action(this._entity);
 
