@@ -1,6 +1,7 @@
 import 'package:piecemeal/piecemeal.dart';
 import 'package:rltut/src/engine.dart';
 import 'package:rltut/src/entity.dart';
+import 'package:rltut/src/exceptions.dart';
 import 'package:rltut/src/uicolor.dart';
 
 abstract class Action {
@@ -50,7 +51,9 @@ class MeleeAction extends ActionWithDirection {
   @override
   void perform() {
     var target = targetActor;
-    if (target == null) return;
+    if (target == null) {
+      throw Impossible('Nothing to attack.');
+    }
 
     var damage = entity.fighter.power - target.fighter.defense;
 
@@ -75,9 +78,15 @@ class MovementAction extends ActionWithDirection {
 
   @override
   void perform() {
-    if (!engine.gameMap.inBounds(destination)) return;
-    if (!engine.gameMap.tiles[destination].walkable) return;
-    if (engine.gameMap.getBlockingEntityAtLocation(destination) != null) return;
+    if (!engine.gameMap.inBounds(destination)) {
+      throw Impossible('That way is blocked.');
+    }
+    if (!engine.gameMap.tiles[destination].walkable) {
+      throw Impossible('That way is blocked.');
+    }
+    if (engine.gameMap.getBlockingEntityAtLocation(destination) != null) {
+      throw Impossible('That way is blocked.');
+    }
 
     entity.move(dx, dy);
   }
@@ -93,5 +102,62 @@ class BumpAction extends ActionWithDirection {
     } else {
       return MovementAction(entity, dx, dy).perform();
     }
+  }
+}
+
+class ItemAction extends Action {
+  final Item _item;
+  Vec _targetPos;
+
+  Item get item => _item;
+  Vec get targetPos => _targetPos;
+  Actor get targetActor => engine.gameMap.getActorAtLocation(targetPos);
+
+  ItemAction(Actor entity, this._item, {Vec targetXY}) : super(entity) {
+    if (targetXY != null) {
+      _targetPos = targetXY;
+    } else {
+      _targetPos = entity.pos;
+    }
+  }
+
+  @override
+  void perform() {
+    item.consumable.activate(this);
+  }
+}
+
+class PickupAction extends Action {
+  PickupAction(Actor entity) : super(entity);
+
+  @override
+  void perform() {
+    var actorLocation = entity.pos;
+    var inventory = entity.inventory;
+
+    for (var item in engine.gameMap.items) {
+      if (actorLocation == item.pos) {
+        if (inventory.items.length >= inventory.capacity) {
+          throw Impossible('Your inventory is full.');
+        }
+
+        engine.gameMap.entities.remove(item);
+        item.parent = entity.inventory;
+        inventory.items.add(item);
+        engine.messageLog.addMessage(text: 'You picked up the ${item.name}!');
+        return;
+      }
+    }
+
+    throw Impossible('There is nothing here to pick up.');
+  }
+}
+
+class DropItemAction extends ItemAction {
+  DropItemAction(Actor entity, Item item) : super(entity, item);
+
+  @override
+  void perform() {
+    entity.inventory.drop(item);
   }
 }

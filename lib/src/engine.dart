@@ -2,6 +2,7 @@ import 'package:malison/malison.dart';
 import 'package:piecemeal/piecemeal.dart';
 
 import 'package:rltut/src/entity.dart';
+import 'package:rltut/src/exceptions.dart';
 import 'package:rltut/src/fov.dart';
 import 'package:rltut/src/gamemap.dart';
 import 'package:rltut/src/messagelog.dart';
@@ -21,6 +22,9 @@ final moveKeys = {
 
 final controlKeys = {
   'viewHistory': 'viewHistory',
+  'get': 'pickup',
+  'drop': 'drop',
+  'use': 'use',
 };
 
 class Engine {
@@ -70,7 +74,11 @@ class Engine {
     enemies.remove(player);
     for (var entity in enemies) {
       if (entity.ai != null) {
-        entity.ai.perform();
+        try {
+          entity.ai.perform();
+        } on Impossible {
+          // Do nothing.
+        }
       }
     }
   }

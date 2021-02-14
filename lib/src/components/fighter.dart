@@ -45,7 +45,30 @@ class Fighter extends BaseComponent {
     engine.messageLog.addMessage(text: deathMessage, fg: deathMessageColor);
   }
 
-  Fighter(Actor actor, this.maxHp, this.defense, this.power) : super(actor) {
+  int heal(int amount) {
+    if (hp == maxHp) {
+      return 0;
+    }
+
+    var newHpValue = hp + amount;
+
+    if (newHpValue > maxHp) {
+      newHpValue = maxHp;
+    }
+
+    var amountRecovered = newHpValue - hp;
+
+    hp = newHpValue;
+
+    return amountRecovered;
+  }
+
+  void takeDamage(int amount) {
+    hp -= amount;
+  }
+
+  Fighter(Actor actor, this.maxHp, this.defense, this.power) {
+    parent = actor;
     _hp = maxHp;
   }
 }

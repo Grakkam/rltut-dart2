@@ -3,13 +3,19 @@ import 'dart:math' as math;
 import 'package:piecemeal/piecemeal.dart';
 
 import 'package:rltut/src/engine.dart';
-import 'package:rltut/src/entity.dart';
 import 'package:rltut/src/entityfactories.dart';
 import 'package:rltut/src/gamemap.dart';
 import 'package:rltut/src/tiletypes.dart';
 
-GameMap generateDungeon(int maxRooms, int roomMinSize, int roomMaxSize,
-    int mapWidth, int mapHeight, int maxMonstersPerRoom, Engine engine) {
+GameMap generateDungeon(
+    int maxRooms,
+    int roomMinSize,
+    int roomMaxSize,
+    int mapWidth,
+    int mapHeight,
+    int maxMonstersPerRoom,
+    int maxItemsPerRoom,
+    Engine engine) {
   var player = engine.player;
   var dungeon = GameMap(engine, mapWidth, mapHeight, [player]);
   var random = math.Random();
@@ -52,7 +58,7 @@ GameMap generateDungeon(int maxRooms, int roomMinSize, int roomMaxSize,
       }
     }
 
-    placeEntities(newRoom.inner, dungeon, maxMonstersPerRoom);
+    placeEntities(newRoom.inner, dungeon, maxMonstersPerRoom, maxItemsPerRoom);
 
     rooms.add(newRoom);
   }
@@ -93,22 +99,37 @@ List<Rect> tunnelBetween(Vec start, Vec end) {
   return tunnels;
 }
 
-void placeEntities(Rect room, GameMap dungeon, int maximumMonsters) {
+void placeEntities(
+    Rect room, GameMap dungeon, int maximumMonsters, int maximumItems) {
   var random = math.Random();
   var nrOfMonsters = random.nextInt(maximumMonsters);
+  var nrOfItems = random.nextInt(maximumItems);
 
   for (var i = 0; i < nrOfMonsters; i++) {
     var x = room.left + random.nextInt(room.width);
     var y = room.top + random.nextInt(room.height);
 
     if (!dungeon.entities.any((element) => element.pos == Vec(x, y))) {
-      var monster;
+      // var monster;
       if (random.nextInt(100) < 80) {
-        monster = Orc();
+        Monster.orc.spawn(dungeon, x, y);
+        // monster = Orc();
       } else {
-        monster = Troll();
+        Monster.troll.spawn(dungeon, x, y);
+        // monster = Troll();
       }
-      monster.place(x, y, dungeon);
+      // monster.place(x, y, dungeon);
+    }
+  }
+
+  for (var i = 0; i < nrOfItems; i++) {
+    var x = room.left + random.nextInt(room.width);
+    var y = room.top + random.nextInt(room.height);
+
+    if (!dungeon.entities.any((element) => element.pos == Vec(x, y))) {
+      Potion.healthPotion.spawn(dungeon, x, y);
+      // var item = HealthPotion();
+      // item.place(x, y, dungeon);
     }
   }
 }

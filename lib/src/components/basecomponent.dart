@@ -3,9 +3,12 @@ import 'package:rltut/src/entity.dart';
 import 'package:rltut/src/gamemap.dart';
 
 abstract class BaseComponent {
-  Entity parent;
+  Entity _parent;
 
-  BaseComponent(this.parent);
+  BaseComponent();
+
+  Entity get parent => _parent;
+  set parent(Entity value) => _parent = value;
 
   GameMap get gameMap => parent.gameMap;
   Engine get engine => parent.gameMap.engine;

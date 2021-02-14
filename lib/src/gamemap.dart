@@ -35,6 +35,10 @@ class GameMap {
     return _entities.whereType<Actor>().toList();
   }
 
+  List<Item> get items {
+    return _entities.whereType<Item>().toList();
+  }
+
   Actor getActorAtLocation(Vec pos) {
     for (var actor in actors) {
       if (actor.pos == pos && actor.isAlive) {

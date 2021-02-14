@@ -1,3 +1,13 @@
+## 0.8.0
+
+- Part 8 - items - done!
+- Continuing to use malison screens instead of event handlers. A lot of the code is a mess at the moment,
+but it seems to work. Will need major refactoring down the line, though.
+- You can now pick up, drop, and consume Health Potions.
+- Made a bunch of changes in regards to spawning entities on the map. To clone an object in Dart the
+object has to be responsible for cloning itself. All assignment is by reference, so you need to
+explicitly create new instances in order to make independent copies.
+
 ## 0.7.1
 
 - Part 8 refactors. Ready for items!

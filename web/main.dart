@@ -22,6 +22,7 @@ final roomMinSize = 6;
 final maxRooms = 30;
 
 var maxMonstersPerRoom = 2;
+var maxItemsPerRoom = 2;
 
 final player = Player();
 
@@ -62,11 +63,13 @@ void main() {
   _ui.keyPress.bind('se', KeyCode.right, alt: true);
 
   _ui.keyPress.bind('viewHistory', KeyCode.v);
-  _ui.keyPress.bind('exit', KeyCode.x);
+  _ui.keyPress.bind('get', KeyCode.g);
+  _ui.keyPress.bind('drop', KeyCode.d);
+  _ui.keyPress.bind('use', KeyCode.u);
 
   engine.gameMap = generateDungeon(maxRooms, roomMinSize, roomMaxSize, mapWidth,
-      mapHeight, maxMonstersPerRoom, engine);
-  player.gameMap = engine.gameMap;
+      mapHeight, maxMonstersPerRoom, maxItemsPerRoom, engine);
+  player.parent = engine.gameMap;
   engine.fov = Fov(engine.gameMap);
   engine.updateFov();
   engine.messageLog.addMessage(
